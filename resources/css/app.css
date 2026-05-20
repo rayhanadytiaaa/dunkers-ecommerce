@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global light-mode palette refresh */
+html:not(.dark) .bg-gray-600 {
+	background-color: #2563eb !important;
+}
+
+html:not(.dark) .bg-gray-800 {
+	background-color: #1d4ed8 !important;
+}
+
+html:not(.dark) .bg-gray-900 {
+	background-color: #1e40af !important;
+}
+
+html:not(.dark) .hover\:bg-gray-800:hover {
+	background-color: #1d4ed8 !important;
+}
+
+html:not(.dark) .hover\:bg-gray-900:hover {
+	background-color: #1e40af !important;
+}
+
+html:not(.dark) .border-black {
+	border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) input.bg-gray-800,
+html:not(.dark) select.bg-gray-800,
+html:not(.dark) textarea.bg-gray-800 {
+	background-color: #f8fafc !important;
+	color: #0f172a !important;
+	border-color: #cbd5e1 !important;
+}

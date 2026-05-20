@@ -1,0 +1,711 @@
+DOKUMENTASI REVISI HARIAN
+Proyek  : rayhanTA (Laravel)
+Tanggal : 2026-03-09
+Penyusun: GitHub Copilot
+
+============================================================
+1) RINGKASAN EKSEKUTIF
+============================================================
+Pada sesi revisi hari ini, perubahan mencakup:
+- Revisi UI/UX besar pada halaman dashboard, produk, checkout, cart, riwayat, dan halaman admin.
+- Implementasi dark mode berbasis class dan persistensi tema via localStorage.
+- Perapihan branding header/footer (logo + teks Dunkers) dan iterasi warna logo.
+- Penyempurnaan filter kategori produk, pencarian, serta transformasi pagination menjadi load more.
+- Rework tampilan produk: hilangkan pemisahan visual kategori, tampil grid 4 kolom responsif.
+- Implementasi dan integrasi stok per ukuran end-to-end (database, model, controller, view, cart/checkout).
+- Soft delete untuk user dan produk, serta preservasi relasi riwayat transaksi terhadap data terhapus.
+- Revisi autentikasi/registrasi: username pelanggan otomatis, validasi nomor HP Indonesia, placeholder form.
+- Pemisahan data pengguna admin vs pelanggan di panel admin dengan pagination masing-masing.
+- Pembuatan komponen reusable baru (footer dan password input).
+
+============================================================
+2) DETAIL REVISI BERDASARKAN FITUR
+============================================================
+
+A. HEADER, BRANDING, DAN LOGO
+------------------------------------------------------------
+Tujuan:
+- Menampilkan branding Dunkers lebih jelas.
+- Menyamakan perilaku logo di light/dark mode sesuai permintaan terbaru.
+
+Perubahan:
+1. Menambahkan teks "Dunkers" di samping logo header.
+   File:
+   - resources/views/layouts/navigation.blade.php
+
+2. Penyesuaian komponen logo agar class dari pemanggil bisa dipakai konsisten.
+   File:
+   - resources/views/components/application-logo.blade.php
+   Catatan teknis:
+   - Menggunakan $attributes->merge([...]) pada tag img.
+
+3. Iterasi warna logo basket sampai final:
+   - Garis logo basket pada SVG diubah menjadi oranye.
+   File:
+   - public/img/logo-basket.svg (fill path final: #E67E22)
+
+4. Final state dark mode logo pada header:
+   - Logo tetap tampil di dark mode (disamakan dengan light mode),
+     tidak lagi disembunyikan.
+   File:
+   - resources/views/layouts/navigation.blade.php
+   - resources/views/layouts/guest.blade.php
+
+Status akhir branding:
+- Header menampilkan ikon logo + teks Dunkers di light/dark mode.
+- Warna garis dalam logo basket: oranye.
+
+
+B. DARK MODE, FONT, DAN PALETTE GLOBAL
+------------------------------------------------------------
+Tujuan:
+- Menstandarkan dark mode berbasis class.
+- Menyegarkan tampilan light mode dan konsistensi warna.
+- Mengadopsi font Poppins secara global.
+
+Perubahan:
+1. Tailwind dark mode class-based dan font Poppins.
+   File:
+   - tailwind.config.js
+
+2. Penggantian font ke Poppins pada layout app, guest, welcome.
+   File:
+   - resources/views/layouts/app.blade.php
+   - resources/views/layouts/guest.blade.php
+   - resources/views/welcome.blade.php
+
+3. Persistensi tema (light/dark) via localStorage.
+   File:
+   - resources/views/layouts/navigation.blade.php (toggle + script)
+   - resources/views/layouts/guest.blade.php (bootstrap theme script)
+
+4. Refresh palette light mode melalui CSS override.
+   File:
+   - resources/css/app.css
+   Catatan:
+   - Menyetel varian bg-gray* dan border agar tampilan light mode lebih lembut.
+
+
+C. DASHBOARD (USER)
+------------------------------------------------------------
+Tujuan:
+- Menyederhanakan dashboard dengan fokus produk terlaris.
+
+Perubahan:
+1. Menghapus spotlight logic dan menyisakan produk terlaris.
+2. Menambah jumlah item produk terlaris dari 3 ke 4.
+   File:
+   - app/Http/Controllers/DashboardController.php
+
+3. Redesign tampilan dashboard:
+   - Header sambutan baru.
+   - Kartu produk terlaris lebih rapi.
+   - Image fit lebih baik (object-contain).
+   File:
+   - resources/views/dashboard.blade.php
+
+
+D. HALAMAN PRODUK (LISTING, FILTER, GRID, PAGINATION)
+------------------------------------------------------------
+Tujuan:
+- Membenahi filter kategori.
+- Memperbaiki landing state agar menampilkan semua produk.
+- Menyederhanakan visual list produk.
+- Mengubah pagination menjadi load more tanpa pindah halaman.
+
+Perubahan backend:
+1. Validasi request search/kategori pada index produk.
+2. Filter kategori berbasis kategori_id valid (exists:kategori,id).
+3. Query default menampilkan semua produk saat tanpa filter.
+4. Pagination 8 item per halaman dengan query string dipertahankan.
+   File:
+   - app/Http/Controllers/ProdukController.php
+
+Perubahan frontend:
+1. Dropdown kategori:
+   - Menghapus opsi "uncategorized" dari form.
+   - Auto-submit saat kategori berubah.
+
+2. Tampilan list produk:
+   - Menghilangkan judul kategori dan garis pemisah antar kategori.
+   - Menampilkan produk sebagai satu grid responsif.
+   - Grid final: 1 kolom (mobile), 2 kolom (md), 4 kolom (xl).
+
+3. Pagination:
+   - Menghapus pagination default link.
+   - Mengimplementasikan tombol "Selanjutnya" (load more) berbasis fetch.
+   - Data halaman berikutnya di-append ke bawah tanpa navigasi halaman.
+   - Saat data habis, tombol hilang dan muncul caption penutup.
+
+4. Penyesuaian warna tombol load more:
+   - Light mode: hijau.
+   - Dark mode: oranye.
+
+File:
+- resources/views/produk.blade.php
+
+Catatan status akhir listing produk:
+- Default landing: semua produk tampil.
+- Filter kategori tetap tersedia.
+- Interaksi load more bekerja append-in-place.
+
+
+E. PRODUK DETAIL + REKOMENDASI + STOK UKURAN
+------------------------------------------------------------
+Tujuan:
+- Menampilkan informasi produk lebih lengkap.
+- Menyesuaikan transaksi dengan ukuran.
+- Menambah visibilitas data rekomendasi/debug.
+
+Perubahan:
+1. Detail produk:
+   - Penyesuaian warna light/dark mode.
+   - Menampilkan total terjual.
+   - Menampilkan stok per ukuran (jika kategori punya ukuran).
+   - Validasi limit qty mengikuti ukuran terpilih.
+
+2. Rekomendasi:
+   - Perubahan pendekatan pemetaan vector user berbasis kategori.
+   - Ambang similarity diperketat (>= 0.5).
+   - Menambah data debug similarity pada tampilan.
+
+3. Riwayat pembelian user untuk produk terkait ditambahkan di halaman detail.
+
+File:
+- app/Http/Controllers/ProdukController.php
+- resources/views/detail-produk.blade.php
+
+
+F. CART DAN CHECKOUT (INTEGRASI STOK PER UKURAN)
+------------------------------------------------------------
+Tujuan:
+- Menjamin stok valid untuk produk berukuran.
+
+Perubahan:
+1. add to cart:
+   - Validasi ukuran wajib untuk kategori yang memiliki ukuran.
+   - Cek stok berdasarkan ukuran (produk_ukuran_stok).
+   - Akumulasi qty cart divalidasi terhadap stok ukuran.
+
+2. update cart qty:
+   - Validasi qty terhadap stok ukuran bila ukuran dipilih.
+
+3. checkout/checkoutStore:
+   - Decrement stok per ukuran jika cart item memiliki ukuran_id.
+   - Tetap decrement stok umum produk.
+
+File:
+- app/Http/Controllers/CartController.php
+
+Perubahan tampilan terkait:
+- resources/views/cart.blade.php
+- resources/views/checkout.blade.php
+
+
+G. ADMIN PRODUK (CREATE/EDIT + FORMAT HARGA + STOK UKURAN)
+------------------------------------------------------------
+Tujuan:
+- Mempermudah input produk.
+- Mendukung kategori dengan ukuran.
+
+Perubahan backend:
+1. Create/edit produk memuat kategori beserta relasi ukuran.
+2. Harga dibersihkan dari format rupiah sebelum validasi/simpan.
+3. Validasi stok:
+   - stok umum nullable untuk kategori berukuran.
+   - ukuran_stok.* integer >= 0.
+4. Jika kategori berukuran:
+   - hitung total stok dari seluruh ukuran.
+   - simpan/update ke tabel produk_ukuran_stok.
+5. Jika kategori non-ukuran:
+   - stok umum wajib.
+6. Ketika kategori berubah, stok ukuran yang tidak relevan dihapus.
+
+File:
+- app/Http/Controllers/AdminController.php
+
+Perubahan frontend admin:
+1. Form create/edit produk:
+   - Input harga format rupiah otomatis (JS).
+   - Dynamic render input stok per ukuran berdasarkan kategori.
+   - Menampilkan total stok hasil penjumlahan ukuran.
+   - Penambahan tombol kembali (khusus edit).
+
+File:
+- resources/views/admin/createProduk.blade.php
+- resources/views/admin/editProduk.blade.php
+
+
+H. ADMIN USERS (PEMISAHAN ROLE, VALIDASI, SOFT DELETE FLOW)
+------------------------------------------------------------
+Tujuan:
+- Memisahkan pengelolaan admin dan pelanggan.
+- Menjaga uniqueness setelah soft delete.
+
+Perubahan:
+1. Halaman users admin dipisah menjadi dua section:
+   - Role 1 (Admin)
+   - Role 2 (Pelanggan)
+   masing-masing dengan pagination terpisah.
+
+2. Validasi user:
+   - email unique hanya untuk row aktif (deleted_at null).
+   - username unique hanya untuk row aktif.
+   - nomor HP regex Indonesia: ^08[0-9]{8,11}$
+
+3. Pada edit user:
+   - field alamat disembunyikan jika role admin.
+
+4. Saat hapus user:
+   - username/email diarsipkan ke token unik sebelum soft delete,
+     sehingga email/username lama dapat digunakan kembali.
+
+File:
+- app/Http/Controllers/AdminController.php
+- resources/views/admin/users.blade.php
+- resources/views/admin/edit_user.blade.php
+- resources/views/admin/create_user.blade.php
+
+
+I. AUTHENTICATION & REGISTRATION
+------------------------------------------------------------
+Tujuan:
+- Menyederhanakan registrasi pelanggan.
+- Menambah UX form input password.
+
+Perubahan:
+1. Registrasi pelanggan:
+   - field username dihapus dari form.
+   - username otomatis dibuat dari email (slug + suffix unik jika bentrok).
+   - validasi email unique pada data aktif.
+   - tambah validasi alamat wajib.
+   - validasi nomor HP regex Indonesia.
+
+2. Login redirect by role:
+   - role admin diarahkan ke dashboard admin.
+   - role pelanggan ke dashboard umum.
+
+3. Komponen password input reusable dengan toggle show/hide.
+   - Diadopsi pada login, register, confirm/reset password.
+
+File:
+- app/Http/Controllers/Auth/RegisteredUserController.php
+- app/Http/Controllers/Auth/AuthenticatedSessionController.php
+- resources/views/auth/register.blade.php
+- resources/views/auth/login.blade.php
+- resources/views/auth/confirm-password.blade.php
+- resources/views/auth/reset-password.blade.php
+- resources/views/components/password-input.blade.php
+
+
+J. SOFT DELETE DAN KONSISTENSI RELASI RIWAYAT
+------------------------------------------------------------
+Tujuan:
+- Riwayat transaksi tetap terbaca meskipun user/produk sudah dihapus (soft delete).
+
+Perubahan model:
+1. Menambahkan SoftDeletes pada:
+   - User
+   - Produk
+
+2. Relasi withTrashed:
+   - Transaksi->user() pakai withTrashed.
+   - Detail_Transaksi->produk() pakai withTrashed.
+
+3. Menambah relasi ukuran pada detail transaksi.
+
+File:
+- app/Models/User.php
+- app/Models/Produk.php
+- app/Models/Transaksi.php
+- app/Models/Detail_Transaksi.php
+- app/Models/Ukuran.php
+- app/Models/ProdukUkuranStok.php (baru)
+
+Perubahan migrasi:
+- 2026_03_09_000001_add_soft_deletes_to_users_and_produk_tables.php
+- 2026_03_09_000002_create_produk_ukuran_stok_table.php
+- 2026_03_09_000003_add_ukuran_id_to_detail_transaksi_table.php
+- 2026_03_09_000004_archive_soft_deleted_user_credentials.php
+
+Status:
+- Migrasi telah dijalankan sukses (berdasarkan terminal context).
+
+
+K. FOOTER KOMPONEN REUSABLE
+------------------------------------------------------------
+Tujuan:
+- Mengurangi duplikasi footer dan memudahkan maintenance.
+
+Perubahan:
+1. Membuat komponen footer reusable.
+2. Mengganti footer hardcoded di layout app dengan komponen tersebut.
+
+File:
+- resources/views/components/site-footer.blade.php (baru)
+- resources/views/layouts/app.blade.php
+
+
+L. PENYESUAIAN UI ADMIN DAN HALAMAN TRANSAKSI
+------------------------------------------------------------
+Tujuan:
+- Menyeragamkan tone light/dark di halaman admin/user flow.
+
+File terdampak utama:
+- resources/views/admin/Index.blade.php
+- resources/views/admin/KelolaProduk.blade.php
+- resources/views/admin/RiwayatTransaksi.blade.php
+- resources/views/riwayat-belanja.blade.php
+- resources/views/detail-transaksi.blade.php
+
+Ringkasan:
+- Heading dan warna teks diselaraskan.
+- Button/action menyesuaikan mode light/dark.
+- Table/tampilan data diberi kontras lebih baik.
+
+
+M. ROUTING TAMBAHAN
+------------------------------------------------------------
+Perubahan:
+- Menambah route /admin bernama admin.index.
+File:
+- routes/web.php
+
+============================================================
+3) DAFTAR FILE BARU YANG DIBUAT
+============================================================
+1. app/Models/ProdukUkuranStok.php
+2. database/migrations/2026_03_09_000001_add_soft_deletes_to_users_and_produk_tables.php
+3. database/migrations/2026_03_09_000002_create_produk_ukuran_stok_table.php
+4. database/migrations/2026_03_09_000003_add_ukuran_id_to_detail_transaksi_table.php
+5. database/migrations/2026_03_09_000004_archive_soft_deleted_user_credentials.php
+6. resources/views/components/password-input.blade.php
+7. resources/views/components/site-footer.blade.php
+8. DOKUMENTASI_REVISI_2026-03-09.txt
+
+============================================================
+4) VALIDASI DAN PENGUJIAN SINGKAT YANG DILAKUKAN
+============================================================
+- Verifikasi diagnostics berkala pada file yang diedit (no errors pada pengecekan yang dilakukan).
+- Verifikasi migrasi database via terminal: php artisan migrate (exit code 0).
+- Verifikasi fungsional visual secara iteratif berdasarkan revisi user:
+  - filter kategori,
+  - grid produk,
+  - load more,
+  - tombol dark mode,
+  - branding header/logo.
+
+============================================================
+5) STATUS AKHIR (FINAL STATE)
+============================================================
+1. Halaman produk:
+   - Default tampil semua produk.
+   - Filter kategori aktif.
+   - Grid 4 kolom responsif.
+   - Pagination model load more (append bawah).
+
+2. Header:
+   - Logo + teks Dunkers tampil di light/dark mode.
+   - Garis logo basket berwarna oranye.
+
+3. Dark mode:
+   - Berbasis class + localStorage persistence.
+
+4. Data integrity:
+   - Soft delete user/produk aktif.
+   - Riwayat transaksi tetap referensial ke data terhapus via withTrashed.
+
+5. Inventori:
+   - Stok per ukuran berjalan dari admin form sampai cart/checkout.
+
+============================================================
+6) CATATAN OPERASIONAL
+============================================================
+- Karena perubahan hari ini lintas banyak modul (UI, auth, model, DB),
+  disarankan smoke test cepat end-to-end untuk:
+  1) Registrasi user baru,
+  2) Login admin & pelanggan,
+  3) CRUD produk berukuran,
+  4) Add to cart (dengan ukuran), checkout, riwayat,
+  5) Toggle tema light/dark di seluruh halaman utama.
+
+============================================================
+7) LAMPIRAN KODE UTAMA (CUKILAN IMPLEMENTASI)
+============================================================
+
+A. Filter kategori + search + pagination (ProdukController@index)
+File:
+- app/Http/Controllers/ProdukController.php
+
+Kode:
+------------------------------------------------------------
+public function index(Request $request)
+{
+   $request->validate([
+      'search' => ['nullable', 'string', 'max:255'],
+      'kategori' => ['nullable', 'integer', 'exists:kategori,id'],
+   ]);
+
+   $query = Produk::with('kategori')->orderBy('id', 'desc');
+
+   if ($request->filled('search')) {
+      $query->where('nama', 'like', '%' . $request->search . '%');
+   }
+
+   if ($request->filled('kategori')) {
+      $query->where('kategori_id', (int) $request->kategori);
+   }
+
+   $produkPage = $query->paginate(8)->withQueryString();
+   $kategoriProduk = $produkPage->getCollection()->groupBy(function ($item) {
+      return $item->kategori_id ?? 'uncategorized';
+   });
+
+   $kategoris = Kategori::orderBy('nama')->get();
+
+   return view('produk', compact('kategoriProduk', 'produkPage', 'kategoris'));
+}
+------------------------------------------------------------
+
+
+B. Load more (append produk tanpa pindah halaman)
+File:
+- resources/views/produk.blade.php
+
+Kode:
+------------------------------------------------------------
+<button
+   id="load-more-btn"
+   type="button"
+   data-next-url="{{ $produkPage->nextPageUrl() }}"
+   class="px-6 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-orange-900 dark:hover:bg-orange-700 text-white font-semibold transition-colors"
+>
+   Selanjutnya
+</button>
+
+<script>
+const produkGrid = document.getElementById('produk-grid');
+const loadMoreBtn = document.getElementById('load-more-btn');
+const endCaption = document.getElementById('end-caption');
+
+if (loadMoreBtn) {
+   loadMoreBtn.addEventListener('click', async function () {
+      const nextUrl = loadMoreBtn.dataset.nextUrl;
+      if (!nextUrl) {
+         loadMoreBtn.remove();
+         endCaption.classList.remove('hidden');
+         return;
+      }
+
+      const response = await fetch(nextUrl, {
+         headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const nextItems = doc.querySelectorAll('#produk-grid .produk-item');
+
+      nextItems.forEach((item) => {
+         produkGrid.insertAdjacentHTML('beforeend', item.outerHTML);
+      });
+
+      const nextButtonOnFetchedPage = doc.getElementById('load-more-btn');
+      if (nextButtonOnFetchedPage && nextButtonOnFetchedPage.dataset.nextUrl) {
+         loadMoreBtn.dataset.nextUrl = nextButtonOnFetchedPage.dataset.nextUrl;
+      } else {
+         loadMoreBtn.remove();
+         endCaption.classList.remove('hidden');
+      }
+   });
+}
+</script>
+------------------------------------------------------------
+
+
+C. Soft delete model + relasi withTrashed
+File:
+- app/Models/User.php
+- app/Models/Produk.php
+- app/Models/Transaksi.php
+- app/Models/Detail_Transaksi.php
+
+Kode:
+------------------------------------------------------------
+// User.php
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class User extends Authenticatable
+{
+   use HasFactory, Notifiable, SoftDeletes;
+}
+
+// Produk.php
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Produk extends Model
+{
+   use SoftDeletes;
+}
+
+// Transaksi.php
+public function user()
+{
+   return $this->belongsTo(User::class)->withTrashed();
+}
+
+// Detail_Transaksi.php
+public function produk()
+{
+   return $this->belongsTo(Produk::class, 'produk_id')->withTrashed();
+}
+------------------------------------------------------------
+
+
+D. Migration stok per ukuran
+File:
+- database/migrations/2026_03_09_000002_create_produk_ukuran_stok_table.php
+
+Kode:
+------------------------------------------------------------
+Schema::create('produk_ukuran_stok', function (Blueprint $table) {
+   $table->id();
+   $table->foreignId('produk_id')->constrained('produk')->cascadeOnDelete();
+   $table->foreignId('ukuran_id')->constrained('ukuran')->cascadeOnDelete();
+   $table->integer('stok')->default(0);
+   $table->timestamps();
+
+   $table->unique(['produk_id', 'ukuran_id']);
+});
+------------------------------------------------------------
+
+
+E. Simpan stok per ukuran pada admin create produk
+File:
+- app/Http/Controllers/AdminController.php
+
+Kode:
+------------------------------------------------------------
+$kategoriTerpilih = Kategori::with('ukurans')->find($data['kategori_id']);
+$hasUkuran = $kategoriTerpilih && $kategoriTerpilih->ukurans->isNotEmpty();
+
+if ($hasUkuran) {
+   $totalStok = 0;
+   $ukuranStokInput = $request->input('ukuran_stok', []);
+
+   foreach ($kategoriTerpilih->ukurans as $ukuran) {
+      $stokUkuran = (int) ($ukuranStokInput[$ukuran->id] ?? 0);
+      $totalStok += $stokUkuran;
+   }
+
+   $data['stok'] = $totalStok;
+}
+
+$produk = Produk::create($data);
+
+if ($hasUkuran) {
+   foreach ($kategoriTerpilih->ukurans as $ukuran) {
+      ProdukUkuranStok::updateOrCreate(
+         [
+            'produk_id' => $produk->id,
+            'ukuran_id' => $ukuran->id,
+         ],
+         [
+            'stok' => (int) ($ukuranStokInput[$ukuran->id] ?? 0),
+         ]
+      );
+   }
+}
+------------------------------------------------------------
+
+
+F. Validasi nomor HP Indonesia + auto username registrasi
+File:
+- app/Http/Controllers/Auth/RegisteredUserController.php
+
+Kode:
+------------------------------------------------------------
+$request->validate([
+   'name' => ['required', 'string', 'max:255'],
+   'email' => [
+      'required', 'string', 'lowercase', 'email', 'max:255',
+      Rule::unique('users', 'email')->whereNull('deleted_at'),
+   ],
+   'alamat' => ['required', 'string', 'max:255'],
+   'nomor_hp' => ['required', 'regex:/^08[0-9]{8,11}$/'],
+   'password' => ['required', 'confirmed', Rules\Password::defaults()],
+]);
+
+$usernameBase = Str::slug(Str::before($request->email, '@'), '_');
+$usernameBase = $usernameBase !== '' ? $usernameBase : 'pelanggan';
+$username = $usernameBase;
+$counter = 1;
+
+while (User::where('username', $username)->exists()) {
+   $username = $usernameBase . '_' . $counter;
+   $counter++;
+}
+------------------------------------------------------------
+
+
+G. Soft delete user dengan arsip kredensial sebelum delete
+File:
+- app/Http/Controllers/AdminController.php
+
+Kode:
+------------------------------------------------------------
+$archiveToken = 'deleted_' . $user->id . '_' . Str::lower(Str::random(6));
+$user->username = $archiveToken;
+$user->email = $archiveToken . '@deleted.local';
+$user->save();
+
+$user->delete();
+------------------------------------------------------------
+
+
+H. Komponen logo fleksibel (class dapat diwariskan)
+File:
+- resources/views/components/application-logo.blade.php
+
+Kode:
+------------------------------------------------------------
+<img src="{{ asset('img/logo-basket.svg') }}" alt="logo basket" {{ $attributes->merge(['class' => 'w-11 h-11 bg-[#2C3E50] rounded-3xl']) }}>
+------------------------------------------------------------
+
+
+I. SVG logo final (garis bola basket oranye)
+File:
+- public/img/logo-basket.svg
+
+Kode (inti):
+------------------------------------------------------------
+<path fill="#E67E22" d="..."/>
+------------------------------------------------------------
+
+
+J. Komponen footer reusable
+File:
+- resources/views/components/site-footer.blade.php
+
+Kode:
+------------------------------------------------------------
+<footer class="py-4">
+   <div class="border-t-2 flex justify-center bg-[#F8F9FA] dark:bg-[#1A1A1A] border-black dark:border-[#E67E22]">
+      <div class="py-3 justify-between">
+         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-[#E67E22]" />
+      </div>
+      <div class="pt-4 px-2 justify-between">
+         <p class="text-3xl font-bold text-black dark:text-[#E67E22]">Dunkers</p>
+      </div>
+   </div>
+</footer>
+------------------------------------------------------------
+
+
+Catatan:
+- Cukilan di atas adalah bagian implementasi inti yang paling relevan untuk bukti revisi.
+- Kode lengkap tetap mengacu pada file asli masing-masing.
+
+============================================================
+DOKUMEN SELESAI
+============================================================
