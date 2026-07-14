@@ -32,14 +32,11 @@ Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.show
 
 Route::get('/cart', [CartController::class, 'index'])->middleware(['auth', 'verified'])->name('cart.index');
 Route::post('/cart/{produk}', [CartController::class, 'add'])->middleware(['auth', 'verified'])->name('cart.add');
-Route::post('/checkout', [CartController::class, 'checkout'])->middleware(['auth', 'verified'])->name('cart.checkout');
 
 Route::patch('/cart/{cart}', [CartController::class, 'update'])->middleware(['auth', 'verified'])->name('cart.update');
 Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cart.destroy');
-Route::post('/checkout', [CartController::class, 'checkout'])->middleware(['auth', 'verified'])->name('cart.checkout');
-
 Route::get('/checkout', [CartController::class,'checkoutPage'])->name('checkout.page');
-Route::post('/checkout', [CartController::class,'checkoutStore'])->name('checkout.store');
+Route::post('/checkout', [CartController::class,'checkoutStore'])->middleware(['auth', 'verified'])->name('checkout.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
