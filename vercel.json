@@ -11,6 +11,7 @@
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "buildCommand": "npm run build",
+  "outputDirectory": "public",
   "env": {
     "APP_URL": "https://rayhanta.vercel.app",
     "APP_ENV": "production",
