@@ -12,7 +12,7 @@
     { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|txt|js|css|map))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "buildCommand": "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" && php composer-setup.php --install-dir=. --filename=composer.phar && php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-interaction && rm -f composer-setup.php composer.phar && npm install && npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "public",
   "env": {
     "APP_URL": "https://dunkers-ecommerce.vercel.app",
