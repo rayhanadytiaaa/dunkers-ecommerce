@@ -7,6 +7,9 @@
         "dev": "vite",
         "vercel-build": "npm install && npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/"
     },
+    "engines": {
+        "node": "20.x"
+    },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.0.0",
