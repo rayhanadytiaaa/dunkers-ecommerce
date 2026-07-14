@@ -12,11 +12,11 @@
     { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|txt|js|css|map))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "buildCommand": "npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
+  "buildCommand": "COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction && npm install && npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
   "outputDirectory": "public",
   "env": {
-    "APP_URL": "https://dunkers-ecommerce.vercel.app/",
-    "ASSET_URL": "https://dunkers-ecommerce.vercel.app/",
+    "APP_URL": "https://dunkers-ecommerce.vercel.app",
+    "ASSET_URL": "https://dunkers-ecommerce.vercel.app",
     "APP_ENV": "production",
     "APP_KEY": "base64:SkHG2mjK/CyXByGhy7zONEgXYjVRedIBaIpKKwvjp2w=",
     "APP_DEBUG": "false",
