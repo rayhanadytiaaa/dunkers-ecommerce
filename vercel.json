@@ -13,7 +13,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "env": {
-    "APP_URL": "https://rayhanta.vercel.app",
+    "APP_URL": "https://dunkers-ecommerce.vercel.app/",
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "APP_CONFIG_CACHE": "/tmp/config.php",
