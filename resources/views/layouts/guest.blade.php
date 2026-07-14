@@ -26,14 +26,14 @@
         </script>
     </head>
     <body class="font-sans text-gray-900 dark:text-gray-100 antialiased bg-[#F8F9FA] dark:bg-[#1A1A1A] transition duration-200">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-            <div>
+        <div class="min-h-screen flex flex-col justify-center items-center px-3 py-6 sm:px-6 sm:py-0">
+            <div class="mb-4">
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500 dark:text-gray-400" />
+                    <x-application-logo class="w-16 h-16 sm:w-20 sm:h-20 fill-current text-gray-500 dark:text-gray-400" />
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-gray-600 dark:bg-[#E67E22] shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full max-w-full sm:max-w-md mt-2 sm:mt-6 px-4 py-4 sm:px-6 bg-gray-600 dark:bg-[#E67E22] shadow-md overflow-hidden rounded-xl sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>
