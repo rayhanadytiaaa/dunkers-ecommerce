@@ -19,9 +19,4 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-if ($app->environment('production')) {
-    $app['url']->forceRootUrl($app['config']->get('app.url'));
-    $app['url']->forceScheme('https');
-}
-
 return $app;
