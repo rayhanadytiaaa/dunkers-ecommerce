@@ -1,7 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "api/*.php": {
+    "public/api/*.php": {
       "runtime": "vercel-php@0.9.0"
     }
   },
@@ -13,7 +13,7 @@
     { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|txt|js|css|map))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "buildCommand": "npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
+  "buildCommand": "npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/ && mkdir -p public/api && cp api/index.php public/api/index.php",
   "outputDirectory": "public",
   "env": {
     "APP_URL": "https://dunkers-ecommerce.vercel.app",
