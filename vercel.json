@@ -12,7 +12,7 @@
     { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|txt|js|css|map))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
   "outputDirectory": "public",
   "env": {
     "APP_URL": "https://dunkers-ecommerce.vercel.app",

@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "vercel-build": "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" && php composer-setup.php --install-dir=. --filename=composer.phar && php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-interaction && rm -f composer-setup.php composer.phar && npm install && npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/"
+        "vercel-build": "npm install && npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
