@@ -15,6 +15,7 @@
   "env": {
     "APP_URL": "https://dunkers-ecommerce.vercel.app/",
     "APP_ENV": "production",
+    "APP_KEY": "base64:SkHG2mjK/CyXByGhy7zONEgXYjVRedIBaIpKKwvjp2w=",
     "APP_DEBUG": "false",
     "APP_CONFIG_CACHE": "/tmp/config.php",
     "APP_EVENTS_CACHE": "/tmp/events.php",
