@@ -29,7 +29,7 @@
                             <div class="flex items-center gap-4">
                                 <!-- Gambar Produk -->
                                 <div class="w-20 h-20 flex-shrink-0">
-                                    <img src="{{ asset('storage/img/produk/' . $item->produk->gambarproduk) }}"
+                                    <img src="{{ asset('img/produk/' . $item->produk->gambarproduk) }}"
                                          alt="{{ $item->produk->nama }}"
                                          class="w-full h-full object-cover rounded-lg">
                                 </div>

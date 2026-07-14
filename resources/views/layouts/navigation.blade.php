@@ -77,7 +77,7 @@
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-[#2C3E50] dark:text-white bg-gray-600 hover:bg-gray-800 dark:bg-[#E67E22] dark:hover:bg-[#E67E22] focus:outline-none transition ease-in-out duration-200">
                             <div>
                                 <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-                                    <img src="{{ asset('storage/img/produk/keranjang.png') }}" alt="keranjang" class=" w-[22px] h-[22px] ">
+                                    <img src="{{ asset('img/produk/keranjang.png') }}" alt="keranjang" class=" w-[22px] h-[22px] ">
                                 </x-nav-link>
                             </div>
                         </button>

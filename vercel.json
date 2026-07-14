@@ -5,12 +5,12 @@
     }
   },
   "routes": [
-    { "src": "/build/(.*)", "dest": "/public/build/$1" },
-    { "src": "/favicon.ico", "dest": "/public/favicon.ico" },
-    { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|txt|js|css|map))", "dest": "/public/$1" },
+    { "src": "/build/(.*)", "dest": "/build/$1" },
+    { "src": "/favicon.ico", "dest": "/favicon.ico" },
+    { "src": "/(.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|txt|js|css|map))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && mkdir -p public/storage/img && cp -R public/img/* public/storage/img/",
   "outputDirectory": "public",
   "env": {
     "APP_URL": "https://dunkers-ecommerce.vercel.app/",

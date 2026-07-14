@@ -5,15 +5,15 @@
         <div class="flex justify-center w-[500px] ml-10"> 
     
             <div class="w-40 mx-4">
-                <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk1) }}" 
+                <img src="{{ asset('img/produk/' . $produk->gambarproduk1) }}" 
                      alt="{{ $produk->nama }}" 
                      class="w-32 rounded-2xl shadow-gray-500/50 shadow-xl">
     
-                <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk2) }}" 
+                <img src="{{ asset('img/produk/' . $produk->gambarproduk2) }}" 
                      alt="{{ $produk->nama }}" 
                      class="w-32 rounded-2xl shadow-gray-500/50 shadow-xl my-2">
     
-                <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk3) }}" 
+                <img src="{{ asset('img/produk/' . $produk->gambarproduk3) }}" 
                      alt="{{ $produk->nama }}" 
                      class="w-32 rounded-2xl shadow-gray-500/50 shadow-xl my-2">    
             </div>
@@ -24,19 +24,19 @@
                     <div id="slider" class="flex transition-transform duration-700 ease-in-out">
     
                         <div class="min-w-full">
-                            <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk1) }}" 
+                            <img src="{{ asset('img/produk/' . $produk->gambarproduk1) }}" 
                                  class="w-full object-cover " 
                                  alt="{{ $produk->nama }}">
                         </div>
     
                         <div class="min-w-full">
-                            <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk2) }}" 
+                            <img src="{{ asset('img/produk/' . $produk->gambarproduk2) }}" 
                                  class="w-full object-cover" 
                                  alt="{{ $produk->nama }}">
                         </div>
     
                         <div class="min-w-full">
-                            <img src="{{ asset('storage/img/produk/' . $produk->gambarproduk3) }}" 
+                            <img src="{{ asset('img/produk/' . $produk->gambarproduk3) }}" 
                                  class="w-full object-cover" 
                                  alt="{{ $produk->nama }}">
                         </div>
@@ -157,7 +157,7 @@
                                         @else
                                             class=" bg-gray-600 dark:bg-orange-500 hover:bg-gray-800 dark:hover:bg-orange-700 px-6 py-2 rounded w-[75px] text-white"
                                         @endif>
-                                        <img src="{{ asset('storage/img/produk/keranjang.png') }}" alt="keranjang">
+                                        <img src="{{ asset('img/produk/keranjang.png') }}" alt="keranjang">
                                     </button>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                                         @else
                                             class=" bg-gray-600 dark:bg-orange-500 hover:bg-gray-800 dark:hover:bg-orange-700 px-6 py-2 rounded w-[75px] text-white"
                                         @endif>
-                                        <img src="{{ asset('storage/img/produk/keranjang.png') }}" alt="keranjang">
+                                        <img src="{{ asset('img/produk/keranjang.png') }}" alt="keranjang">
                                     </button>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@
                     @foreach($rekomendasi as $item)
                         <a href="{{ route('produk.show', $item->id) }}"
                            class="bg-[#FFF6ED] dark:bg-[#1A1A1A] p-4 rounded-xl hover:scale-105 transition-transform duration-200 shadow-md hover:shadow-lg h-full flex flex-col">
-                            <img src="{{ asset('storage/img/produk/'.$item->gambarproduk) }}"
+                            <img src="{{ asset('img/produk/'.$item->gambarproduk) }}"
                                  class="h-40 w-full object-cover rounded-lg mb-3"
                                  alt="{{ $item->nama }}">
                             <h4 class="font-bold text-black dark:text-white truncate">{{ $item->nama }}</h4>

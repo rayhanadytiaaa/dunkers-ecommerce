@@ -36,7 +36,7 @@
                             <div class="relative mt-5 w-[200px] bg-gray-600 dark:bg-[#E67E22] rounded-[30px] shadow-xl shadow-slate-600 text-center hover:bg-gray-800 dark:hover:bg-orange-600">
                                 {{-- GAMBAR --}}
                                 <img
-                                    src="{{ asset('storage/img/produk/' . $item->gambarproduk) }}"
+                                    src="{{ asset('img/produk/' . $item->gambarproduk) }}"
                                     alt="{{ $item->nama }}"
                                     class="absolute -top-36 left-1/2 -translate-x-1/2 w-80 drop-shadow-2xl hover:animate-pulse"
                                 >

@@ -32,7 +32,7 @@
 
                                 <div class="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition">
                                     <div class="w-16 h-16 flex-shrink-0">
-                                        <img src="{{ asset('storage/img/produk/' . $item->produk->gambarproduk) }}"
+                                        <img src="{{ asset('img/produk/' . $item->produk->gambarproduk) }}"
                                              alt="{{ $item->produk->nama }}"
                                              class="w-full h-full object-cover rounded-lg">
                                     </div>

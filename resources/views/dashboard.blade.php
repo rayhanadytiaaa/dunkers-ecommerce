@@ -24,7 +24,7 @@
                                 <div class="h-full rounded-2xl bg-slate-50 dark:bg-[#E67E22] p-4 flex flex-col text-center border border-slate-200 dark:border-transparent">
                                     <div class="w-full aspect-square rounded-2xl overflow-hidden bg-white mb-4 flex items-center justify-center p-3 border border-slate-200 dark:bg-white/20 dark:border-transparent">
                                         <img
-                                            src="{{ asset('storage/img/produk/' . $item->produk->gambarproduk) }}"
+                                            src="{{ asset('img/produk/' . $item->produk->gambarproduk) }}"
                                             alt="{{ $item->produk->nama }}"
                                             class="max-w-full max-h-full object-contain object-center hover:scale-105 transition-transform duration-300"
                                         >

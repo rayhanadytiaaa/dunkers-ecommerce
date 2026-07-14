@@ -56,7 +56,7 @@
                             <div class="flex gap-4">
                                 @if($detail->produk)
                                     <div class="w-24 h-24 flex-shrink-0">
-                                        <img src="{{ asset('storage/img/produk/' . $detail->produk->gambarproduk) }}" 
+                                        <img src="{{ asset('img/produk/' . $detail->produk->gambarproduk) }}" 
                                              alt="{{ $detail->produk->nama }}" 
                                              class="w-full h-full object-cover rounded-lg">
                                     </div>

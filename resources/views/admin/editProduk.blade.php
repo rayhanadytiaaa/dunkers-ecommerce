@@ -70,7 +70,7 @@
                     <input type="file" name="{{ $field }}" class="w-full">
 
                     @if($produk->$field)
-                        <img src="{{ asset('storage/img/produk/'.$produk->$field) }}" class="w-24 mt-2">
+                        <img src="{{ asset('img/produk/'.$produk->$field) }}" class="w-24 mt-2">
                     @endif
                 </div>
                 @endforeach
